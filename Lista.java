@@ -38,7 +38,25 @@ public class Lista implements Serializable {
 	
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		int escolha;
+		Scanner scan = new Scanner(System.in);
+		for(;;)
+		{
+			System.out.println("O que deseja fazer?");
+			System.out.println("1-asoidaos\n2-adaosdjaos\n3dasojdaosjd...")
+			escolha = scan.nextInt();
+			switch (escolha)
+			{
+				case 1:
+					//chama o metodo
+					break;
+				case 2:
+					
+					break;
+				
+			}
+			if (escolha == x) break; //sai do for
+		}
 
 	}
 
