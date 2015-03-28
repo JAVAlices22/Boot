@@ -80,7 +80,7 @@ public class Hiperlink {
 		Hiperlink h = new Hiperlink("teste", "teste");
 		int opt;
 		Scanner x = new Scanner(System.in);
-		for(;;){2
+		for(;;){
 			System.out.println("O que deseja fazer? 1.editName 2.getName 3.editUrl 4.getUrl 5.editComment 6.getComment 7.addMetatags 8.removeMetatags 9.getMetatags 10.getCreationDate 11.getModificationDate");
 			opt = x.nextInt();
 			if(opt == 1)
