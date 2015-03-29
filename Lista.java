@@ -51,9 +51,12 @@ public class Lista implements Serializable {
 		msize = 0;
 		search = lista.toArray(search);
 		
-		System.out.println("Insira a opção de busca: 1)nome 2)url 3)metatag");
-		opt = x.nextInt();
-		
+		do{
+			System.out.println("Insira a opção de busca: 1)nome 2)url 3)metatag");
+			opt = x.nextInt();
+			if(opt < 1 || opt > 3)
+				System.out.println("Opção inválida.");
+		}while(opt < 1 || opt > 3);
 		switch(opt){
 			case 1:
 				System.out.println("Digite o nome:");
@@ -83,6 +86,7 @@ public class Lista implements Serializable {
 				break;
 		
 			case 3:
+				int optm;
 				System.out.println("Digite a metatag:");
 				n = y.nextLine();
 				for(i =0; i <= size; i++){
@@ -94,9 +98,14 @@ public class Lista implements Serializable {
 					msize = search[i].metatags.size();
 					for(k=0; k < msize; k++){
 						if(n.equals(meta[k])){
-							System.out.format("O hiperlink da posição %d possui a metag. Deseja continuar a busca? 1)sim 2)não\n", i);
-							if(x.nextInt() == 2)
-								return i;
+							do{
+								System.out.format("O hiperlink da posição %d possui a metag. Deseja continuar a busca? 1)sim 2)não\n", i);
+								optm = x.nextInt();
+								if(opt == 2)
+									return i;
+								else if(optm != 1)
+									System.out.println("Opção inválida.");
+							}while(optm != 1 && optm != 2);
 						}
 					}
 				}
@@ -110,8 +119,12 @@ public class Lista implements Serializable {
 		boolean goon = false, goonm = false;
 		Scanner x = new Scanner(System.in);
 		do{
-			System.out.println("Digite a opção que deseja editar: 1)nome 2)url 3)comentário 4)metatags");
-			opt = x.nextInt();
+			do{
+				System.out.println("Digite a opção que deseja editar: 1)nome 2)url 3)comentário 4)metatags");
+				opt = x.nextInt();
+				if(opt < 1 || opt > 4)
+					System.out.println("Opção inválida.");
+			}while(opt < 1 || opt > 4);
 			switch (opt){
 				case 1:
 					System.out.print("Nome atual: ");
@@ -128,84 +141,117 @@ public class Lista implements Serializable {
 					lista.get(position).getUrl();
 					break;
 				case 3:
-					System.out.print("Comentário atual: ");
-					lista.get(position).getComment();
-					lista.get(position).editComment();
-					System.out.print("Novos comentários: ");
-					lista.get(position).getComment();
-					break;
+					do{
+						System.out.print("Lista atual de comentários ");
+						lista.get(position).getComment();
+						do{	
+							System.out.println("Digite o que deseja fazer: 1)adicionar 2)remover");
+							optm = x.nextInt(); 
+							if(optm == 1)
+								lista.get(position).addComment();
+							else if(optm == 2)
+								lista.get(position).removeComment();
+							else
+								System.out.println("Opção inválida.");
+						}while(opt != 1 && opt != 2);
+						do{
+							System.out.println("Deseja continuar as edições de comentários? 1)sim 2)não");
+							optm = x.nextInt();
+							if(optm == 1)
+								goonm = true;
+							else if(optm == 2){
+								System.out.print("Nova lista de metatags: ");
+								lista.get(position).getMetatags();
+								goonm = false;
+							}
+							else
+								System.out.println("Opção inválida.");
+						}while(optm != 1 && optm != 2);
+					}while(goonm);	
 				case 4:
 
 					do{
 						System.out.print("Lista atual de metatags: ");
 						lista.get(position).getMetatags();
-						System.out.println("Digite o que deseja fazer: 1)adicionar 2)remover");
-						optm = x.nextInt(); 
-						if(optm == 1)
-							lista.get(position).addMetatag();
-						else if(optm == 2)
-							lista.get(position).removeMetatag();
-						System.out.println("Deseja continuar as edições de metatag? 1)sim 2)não");
-						optm = x.nextInt();
-						if(optm == 1)
-							goonm = true;
-						else if(optm == 2){
-							System.out.print("Nova lista de metatags: ");
-							lista.get(position).getMetatags();
-							goonm = false;
-						}
+						do{	
+							System.out.println("Digite o que deseja fazer: 1)adicionar 2)remover");
+							optm = x.nextInt(); 
+							if(optm == 1)
+								lista.get(position).addMetatag();
+							else if(optm == 2)
+								lista.get(position).removeMetatag();
+							else
+								System.out.println("Opção inválida.");
+						}while(optm != 1 && optm != 2);
+						do{
+							System.out.println("Deseja continuar as edições de metatag? 1)sim 2)não");
+							optm = x.nextInt();
+							if(optm == 1)
+								goonm = true;
+							else if(optm == 2){
+								System.out.print("Nova lista de metatags: ");
+								lista.get(position).getMetatags();
+								goonm = false;
+							}
+							else
+								System.out.println("Opção inválida.");
+						}while(optm != 1 && optm != 2);
 					}while(goonm);	
 			}
-			System.out.println("Deseja continuar as edições? 1)sim 2)não");
-			opt = x.nextInt(); 
-			if(opt == 1)
-				goon = true;
-			else if(opt == 2)
-				goon = false;
+			do{
+				System.out.println("Deseja continuar as edições? 1)sim 2)não");
+				opt = x.nextInt(); 
+				if(opt == 1)
+					goon = true;
+				else if(opt == 2)
+					goon = false;
+				else
+					System.out.println("Opção inválida.");
+			}while(opt != 1 && opt != 2);
 		}while(goon);
 	}
 	
-	Lista(){
+    private void Save(Lista L){
+        try{
+        	FileOutputStream arquivoGrav = new FileOutputStream("lista.dat"); //gera arquivo para armazenar objeto
+        	ObjectOutputStream objGravar = new ObjectOutputStream(arquivoGrav); //classe responsável por inserir os objetos
+            objGravar.writeObject(L); //grava o objeto L no arquivo
+            objGravar.flush();
+            objGravar.close();
+            arquivoGrav.flush();
+            arquivoGrav.close();
+        	System.out.println("Foi salvo com sucesso.");
+   }catch(Exception ex){
+	   ex.printStackTrace();
+        }
+    }
 		
+	Lista(){	
 	}
-        private void Save(Lista L){
-            try{
-                String local = System.getProperty("user.dir"); //pega o diretório onde o programa está
-                FileOutputStream fout = new FileOutputStream(local); //cria pasta que vai salvar os arquivos
-                ObjectOutputStream oos = new ObjectOutputStream(fout);
-                oos.writeObject(L);
-                oos.close();
-		System.out.println("Foi salvo com sucesso.");
- 
-	   }catch(Exception ex){
-		   ex.printStackTrace();
-            }
-        }
-	private void Load(Lista L){
-            try{
-                String local = System.getProperty("user.dir");
-                FileInputStream fin = new FileInputStream(local);
-                ObjectInputStream ois = new ObjectInputStream(fin);
-                L = (Lista) ois.readObject(); //Carrega no objeto Lista L os dados do arquivo
-		   ois.close();
-            }catch(Exception ex){
-		   //ex.printStackTrace();
-		   System.out.println("Arquivo não encontrado");
-	   } 
-        }
-        
-	
-	
+
 	public static void main(String[] args) {
 		Lista L = new Lista();
-                L.Load(L);
+		try{ //carrega o arquivo, se existir
+			FileInputStream arquivoLeitura = new FileInputStream("lista.dat"); //carrega o arquivo
+			ObjectInputStream objLeitura = new ObjectInputStream(arquivoLeitura); //classe responsável por recuperar os objetos no arquivo
+			L = (Lista)objLeitura.readObject(); //lê o objeto L do arquivo
+		    objLeitura.close();
+	        arquivoLeitura.close();
+		}catch(Exception ex){
+		   //ex.printStackTrace();
+		   System.out.println("Arquivo não encontrado");
+		} 
 		int escolha, flag;
 		Scanner scan = new Scanner(System.in);
 		for(;;)
 		{
-			System.out.println("O que deseja fazer?");
-			System.out.println("1-Add\n2-Search\n3- View\n4-Edit\n5-Remove\n6-Save\n7-sair");
-			escolha = scan.nextInt();
+			do{
+				System.out.println("O que deseja fazer?");
+				System.out.println("1-Adicionar\n2-Buscar\n3-Checar\n4-Editar\n5-Remover\n6-Salvar\n7-Sair e salvar\n8-Sair");
+				escolha = scan.nextInt();
+				if(escolha < 1 || escolha > 8)
+					System.out.println("Opção inválida.");
+			}while(escolha < 1 || escolha > 8);
 			switch (escolha)
 			{
 				case 1:
@@ -225,11 +271,16 @@ public class Lista implements Serializable {
 				case 5:
 					L.removeHiperlink();
 					break;
-                                case 6:
-                                    L.Save(L);
-                                    break;
+                case 6:
+                    L.Save(L);
+                    break;
 			}
-			if (escolha == 7) break; //sai do for
+			if (escolha == 7){
+				L.Save(L);
+				break; //salva o arquivo e sai do for
+			}
+			else if(escolha == 8) //sai do for
+				break;
 		}
 
 	}
