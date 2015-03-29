@@ -168,18 +168,43 @@ public class Lista implements Serializable {
 	Lista(){
 		
 	}
-
-	
+        private void Save(Lista L){
+            try{
+                String local = System.getProperty("user.dir"); //pega o diretório onde o programa está
+                FileOutputStream fout = new FileOutputStream(local); //cria pasta que vai salvar os arquivos
+                ObjectOutputStream oos = new ObjectOutputStream(fout);
+                oos.writeObject(L);
+                oos.close();
+		System.out.println("Foi salvo com sucesso.");
+ 
+	   }catch(Exception ex){
+		   ex.printStackTrace();
+            }
+        }
+	private void Load(Lista L){
+            try{
+                String local = System.getProperty("user.dir");
+                FileInputStream fin = new FileInputStream(local);
+                ObjectInputStream ois = new ObjectInputStream(fin);
+                L = (Lista) ois.readObject(); //Carrega no objeto Lista L os dados do arquivo
+		   ois.close();
+            }catch(Exception ex){
+		   //ex.printStackTrace();
+		   System.out.println("Arquivo não encontrado");
+	   } 
+        }
+        
 	
 	
 	public static void main(String[] args) {
 		Lista L = new Lista();
+                L.Load(L);
 		int escolha, flag;
 		Scanner scan = new Scanner(System.in);
 		for(;;)
 		{
 			System.out.println("O que deseja fazer?");
-			System.out.println("1-add\n2-search\n3- view\n4-edit\n5-remove\n6-sair");
+			System.out.println("1-Add\n2-Search\n3- View\n4-Edit\n5-Remove\n6-Save\n7-sair");
 			escolha = scan.nextInt();
 			switch (escolha)
 			{
@@ -200,8 +225,11 @@ public class Lista implements Serializable {
 				case 5:
 					L.removeHiperlink();
 					break;
+                                case 6:
+                                    L.Save(L);
+                                    break;
 			}
-			if (escolha == 6) break; //sai do for
+			if (escolha == 7) break; //sai do for
 		}
 
 	}
