@@ -1,10 +1,10 @@
 import java.util.*;
 import java.io.*;
 
-public class Hiperlink {
+public class Hiperlink implements Serializable{
 	String name;
 	String url;
-	String comment;
+	ArrayList <String> comment;
 	Date creationDate;
 	Date modificationDate;
 	ArrayList <String> metatags;
@@ -12,64 +12,90 @@ public class Hiperlink {
 	public void editName(){
 		Scanner x = new Scanner(System.in);
 		System.out.println("Digite o novo nome do Hiperlink: ");	
-		this.name = x.nextLine();
-		this.modificationDate = new Date();
+		name = x.nextLine();
+		modificationDate = new Date();
 	}
 
 	public void getName(){
-		System.out.println(this.name);
+		System.out.println(name);
 	}
 
 	public void editUrl(){
 		Scanner x = new Scanner(System.in);
 		System.out.println("Digite a nova url do Hiperlink: ");	
-		this.url =  x.nextLine();
-		this.modificationDate = new Date();
+		url =  x.nextLine();
+		modificationDate = new Date();
 	}
 	
 	public void getUrl(){
-		System.out.println(this.url);
+		System.out.println(url);
 	}
 	
-	public void editComment(){
+	public void addComment(){
 		Scanner x = new Scanner(System.in);
-		System.out.println("Digite um novo comentario a respeito do Hiperlink: ");	
-		this.comment =  x.nextLine();
-		this.modificationDate = new Date();
+		System.out.println("Digite o comentário a ser adicionado: ");
+		comment.add(x.nextLine());
+		modificationDate = new Date();
 	}
 	
 	public void getComment(){
-		System.out.println(this.comment);
+		System.out.println(Arrays.toString(comment.toArray()));
 	}
 	
+	public void removeComment(){
+		int index;
+		Scanner x = new Scanner(System.in);
+		System.out.println("O hiperlink possui a seguinte lista de comentários: ");
+		getComment();
+		do{
+			System.out.println("Digite o índice do comentário a ser removido (a contagem começa de 0):");
+			index = x.nextInt();
+			if(0 <= index && index <= comment.size())
+				comment.remove(index);
+			else
+				System.out.println("Índice inválio.");
+		}while(0 > index || index > comment.size());
+		modificationDate = new Date();
+	}
+		
 	public void addMetatag(){
 		Scanner x = new Scanner(System.in);
 		System.out.println("Digite a metatag a ser adicionada: ");
-		this.metatags.add(x.nextLine());
-		this.modificationDate = new Date();
-	}
-	
-	public void removeMetatag(){
-		Scanner x = new Scanner(System.in);
-		System.out.println("Digite a metatag a ser removida: ");
-		this.metatags.remove(x.nextLine());
-		this.modificationDate = new Date();
+		metatags.add(x.nextLine());
+		modificationDate = new Date();
 	}
 	
 	public void getMetatags(){
-		System.out.println(Arrays.toString(this.metatags.toArray()));
+		System.out.println(Arrays.toString(metatags.toArray()));
+	}
+	
+	public void removeMetatag(){
+		int index;
+		Scanner x = new Scanner(System.in);
+		System.out.println("O hiperlink possui a seguinte lista de metatags: ");
+		getComment();
+		do{
+			System.out.println("Digite o índice do comentário a ser removido (a contagem começa de 0):");
+			index = x.nextInt();
+			if(0 <= index && index <= metatags.size())
+				metatags.remove(index);
+			else
+				System.out.println("Índice inválio.");
+		}while(0 > index || index > metatags.size());
+		modificationDate = new Date();
 	}
 	
 	public void getCreationDate(){
-		System.out.println(this.creationDate.toString());
+		System.out.println(creationDate.toString());
 	}
 	
 	public void getModificationDate(){
-		System.out.println(this.modificationDate.toString());
+		System.out.println(modificationDate.toString());
 	}
 	
 	Hiperlink(){
 		creationDate = new Date();
+		comment = new ArrayList<String>();
 		metatags = new ArrayList <String>();
 		modificationDate = creationDate;
 	}
@@ -78,6 +104,7 @@ public class Hiperlink {
 		name = newName;
 		url = newUrl;
 		creationDate = new Date();
+		comment = new ArrayList<String>();
 		metatags = new ArrayList <String>();
 		modificationDate = creationDate;
 	}
