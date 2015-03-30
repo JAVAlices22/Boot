@@ -6,7 +6,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 
-
+//Os comandos do-while seguidos de try-catch destinam-se a impedir que o programa pare
+//por causa de um input inesperado fornecido pelo usuário.
 public class Lista implements Serializable {
 	
 	ArrayList <Hiperlink> lista = new ArrayList <Hiperlink>();
@@ -34,11 +35,16 @@ public class Lista implements Serializable {
 	}
 	
 	private void removeHiperlink(){
-		lista.remove(this.searchHiperlink());
+		int position;
+		do{
+			position = searchHiperlink();
+		}while(position == -1);
+		lista.remove(position);
+		System.out.println("Removido com sucesso.");
 	}
 	
 	private int searchHiperlink(){
-		int size, msize, i, k, opt;
+		int size, msize, i, k, opt, ret = -1;
 		String n;
 		String[] meta;
 		Hiperlink[] search;
@@ -50,24 +56,27 @@ public class Lista implements Serializable {
 		size = lista.size();
 		msize = 0;
 		search = lista.toArray(search);
-		
+	
 		do{
-			System.out.println("Insira a opção de busca: 1)nome 2)url 3)metatag");
-			opt = x.nextInt();
-			if(opt < 1 || opt > 3)
-				System.out.println("Opção inválida.");
+			opt = 0;
+			try{
+				System.out.println("Insira a opção de busca: 1)nome 2)url 3)metatag");
+				opt = x.nextInt();
+				if(opt < 1 || opt > 3)
+					System.out.println("Opção inválida.");
+			}
+			catch(InputMismatchException e){
+				System.out.println("Entrada inválida. Digite um número inteiro válido.");
+				x.nextLine();
+			}
 		}while(opt < 1 || opt > 3);
 		switch(opt){
 			case 1:
 				System.out.println("Digite o nome:");
 				n = y.nextLine();
-				for(i=0; i <= size; i++){
-					if(i == size){
-						System.out.println("Não encontrado.");
-						return -1;
-					}
-					else if(n.equals(search[i].name)){
-						return i;
+				for(i=0; i < size; i++){
+					if(n.equals(search[i].name)){
+						ret = i;
 					}
 				}
 				break;
@@ -75,12 +84,9 @@ public class Lista implements Serializable {
 			case 2:
 				System.out.println("Digite a url");
 				n = y.nextLine();
-				for(i=0; i <= size; i++){
-					if(i == size){
-						return -1;
-					}
-					else if(n.equals(search[i].url)){
-						return i;
+				for(i=0; i < size; i++){
+					if(n.equals(search[i].url)){
+						ret =  i;
 					}
 				}
 				break;
@@ -89,29 +95,34 @@ public class Lista implements Serializable {
 				int optm;
 				System.out.println("Digite a metatag:");
 				n = y.nextLine();
-				for(i =0; i <= size; i++){
-					if(i == size){
-						System.out.println("Não encontrado.");
-						return -1;
-					}
+				for(i =0; i < size; i++){
 					meta = search[i].metatags.toArray(meta);
 					msize = search[i].metatags.size();
 					for(k=0; k < msize; k++){
 						if(n.equals(meta[k])){
 							do{
-								System.out.format("O hiperlink da posição %d possui a metag. Deseja continuar a busca? 1)sim 2)não\n", i);
-								optm = x.nextInt();
-								if(opt == 2)
-									return i;
-								else if(optm != 1)
-									System.out.println("Opção inválida.");
-							}while(optm != 1 && optm != 2);
+								optm =0;
+								try{
+									System.out.format("O hiperlink da posição %d possui a metag. Deseja continuar a busca? 1)sim 2)não\n", i);
+									optm = x.nextInt();
+									if(optm == 2)
+										ret = i;
+									else if(optm != 1)
+										System.out.println("Opção inválida.");
+								}
+								catch(InputMismatchException e){
+									System.out.println("Entrada inválida. Digite um número inteiro válido.");
+									x.nextLine();
+								}
+							}while(optm != 1 && opt != 2);
 						}
 					}
 				}
 				break;
-		}	
-		return 0;
+		}
+		if(ret == -1)
+			System.out.println("Não encontrado.");
+		return ret;
 	}
 
 	private void editHiperlink(int position){
@@ -120,10 +131,17 @@ public class Lista implements Serializable {
 		Scanner x = new Scanner(System.in);
 		do{
 			do{
-				System.out.println("Digite a opção que deseja editar: 1)nome 2)url 3)comentário 4)metatags");
-				opt = x.nextInt();
-				if(opt < 1 || opt > 4)
-					System.out.println("Opção inválida.");
+				opt = 0;
+				try{
+					System.out.println("Digite a opção que deseja editar: 1)nome 2)url 3)comentário 4)metatags");
+					opt = x.nextInt();
+					if(opt < 1 || opt > 4)
+						System.out.println("Opção inválida.");
+				}
+				catch(InputMismatchException e){
+					System.out.println("Entrada inválida. Digite um número inteiro válido.");
+					x.nextLine();
+				}
 			}while(opt < 1 || opt > 4);
 			switch (opt){
 				case 1:
@@ -144,69 +162,102 @@ public class Lista implements Serializable {
 					do{
 						System.out.print("Lista atual de comentários ");
 						lista.get(position).getComment();
-						do{	
-							System.out.println("Digite o que deseja fazer: 1)adicionar 2)remover");
-							optm = x.nextInt(); 
-							if(optm == 1)
-								lista.get(position).addComment();
-							else if(optm == 2)
-								lista.get(position).removeComment();
-							else
-								System.out.println("Opção inválida.");
-						}while(opt != 1 && opt != 2);
 						do{
-							System.out.println("Deseja continuar as edições de comentários? 1)sim 2)não");
-							optm = x.nextInt();
-							if(optm == 1)
-								goonm = true;
-							else if(optm == 2){
-								System.out.print("Nova lista de metatags: ");
-								lista.get(position).getMetatags();
-								goonm = false;
+							optm = 0;
+							try{
+								System.out.println("Digite o que deseja fazer: 1)adicionar 2)remover");
+								optm = x.nextInt(); 
+								if(optm == 1)
+									lista.get(position).addComment();
+								else if(optm == 2)
+									lista.get(position).removeComment();
+								else
+									System.out.println("Opção inválida.");
 							}
-							else
-								System.out.println("Opção inválida.");
+							catch(InputMismatchException e){
+								System.out.println("Entrada inválida. Digite um número inteiro válido.");
+								x.nextLine();
+							}
 						}while(optm != 1 && optm != 2);
-					}while(goonm);	
+						do{
+							try{
+								System.out.println("Deseja continuar as edições de comentários? 1)sim 2)não");
+								optm = x.nextInt();
+								if(optm == 1)
+									goonm = true;
+								else if(optm == 2){
+									System.out.print("Nova lista de comentários: ");
+									lista.get(position).getComment();
+									goonm = false;
+								}
+								else
+									System.out.println("Opção inválida.");
+							}
+							catch(InputMismatchException e){
+								System.out.println("Entrada inválida. Digite um número inteiro válido.");
+								x.nextLine();
+							}
+						}while(optm != 1 && optm != 2);
+					}while(goonm);
+					break;
 				case 4:
-
 					do{
 						System.out.print("Lista atual de metatags: ");
 						lista.get(position).getMetatags();
-						do{	
-							System.out.println("Digite o que deseja fazer: 1)adicionar 2)remover");
-							optm = x.nextInt(); 
-							if(optm == 1)
-								lista.get(position).addMetatag();
-							else if(optm == 2)
-								lista.get(position).removeMetatag();
-							else
-								System.out.println("Opção inválida.");
+						do{
+							optm = 0;
+							try{
+								System.out.println("Digite o que deseja fazer: 1)adicionar 2)remover");
+								optm = x.nextInt(); 
+								if(optm == 1)
+									lista.get(position).addMetatag();
+								else if(optm == 2)
+									lista.get(position).removeMetatag();
+								else
+									System.out.println("Opção inválida.");
+							}
+							catch(InputMismatchException e){
+								System.out.println("Entrada inválida. Digite um número inteiro válido.");
+								x.nextLine();
+							}
 						}while(optm != 1 && optm != 2);
 						do{
-							System.out.println("Deseja continuar as edições de metatag? 1)sim 2)não");
-							optm = x.nextInt();
-							if(optm == 1)
-								goonm = true;
-							else if(optm == 2){
-								System.out.print("Nova lista de metatags: ");
-								lista.get(position).getMetatags();
-								goonm = false;
+							try{
+								System.out.println("Deseja continuar as edições de metatag? 1)sim 2)não");
+								optm = x.nextInt();
+								if(optm == 1)
+									goonm = true;
+								else if(optm == 2){
+									System.out.print("Nova lista de metatags: ");
+									lista.get(position).getMetatags();
+									goonm = false;
+								}
+								else
+									System.out.println("Opção inválida.");
 							}
-							else
-								System.out.println("Opção inválida.");
+							catch(InputMismatchException e){
+								System.out.println("Entrada inválida. Digite um número inteiro válido.");
+								x.nextLine();
+							}
 						}while(optm != 1 && optm != 2);
 					}while(goonm);	
+					break;
 			}
 			do{
-				System.out.println("Deseja continuar as edições? 1)sim 2)não");
-				opt = x.nextInt(); 
-				if(opt == 1)
-					goon = true;
-				else if(opt == 2)
-					goon = false;
-				else
-					System.out.println("Opção inválida.");
+				try{
+					System.out.println("Deseja continuar as edições? 1)sim 2)não");
+					opt = x.nextInt(); 
+					if(opt == 1)
+						goon = true;
+					else if(opt == 2)
+						goon = false;
+					else
+						System.out.println("Opção inválida.");
+				}
+				catch(InputMismatchException e){
+					System.out.println("Entrada inválida. Digite um número inteiro válido.");
+					x.nextLine();
+				}
 			}while(opt != 1 && opt != 2);
 		}while(goon);
 	}
@@ -231,26 +282,31 @@ public class Lista implements Serializable {
 
 	public static void main(String[] args) {
 		Lista L = new Lista();
-		try{ //carrega o arquivo, se existir
+		try{ //Carrega o arquivo, se existir.
 			FileInputStream arquivoLeitura = new FileInputStream("lista.dat"); //carrega o arquivo
 			ObjectInputStream objLeitura = new ObjectInputStream(arquivoLeitura); //classe responsável por recuperar os objetos no arquivo
 			L = (Lista)objLeitura.readObject(); //lê o objeto L do arquivo
 		    objLeitura.close();
 	        arquivoLeitura.close();
 		}catch(Exception ex){
-		   //ex.printStackTrace();
 		   System.out.println("Arquivo não encontrado");
 		} 
-		int escolha, flag;
+		int escolha, position;
 		Scanner scan = new Scanner(System.in);
-		for(;;)
-		{
+		for(;;){ //Inicia a interface com o usuário.
 			do{
-				System.out.println("O que deseja fazer?");
-				System.out.println("1-Adicionar\n2-Buscar\n3-Checar\n4-Editar\n5-Remover\n6-Salvar\n7-Sair e salvar\n8-Sair");
-				escolha = scan.nextInt();
-				if(escolha < 1 || escolha > 8)
-					System.out.println("Opção inválida.");
+				escolha =0;
+				try{
+					System.out.println("O que deseja fazer?");
+					System.out.println("1-Adicionar\n2-Buscar\n3-Checar\n4-Editar\n5-Remover Hiperlink\n6-Salvar\n7-Sair e salvar\n8-Sair");
+					escolha = scan.nextInt();
+					if(escolha < 1 || escolha > 8)
+						System.out.println("Opção inválida.");
+				}
+				catch(InputMismatchException e){
+					System.out.println("Entrada inválida. Digite um número inteiro válido.");
+					scan.nextLine();
+				}
 			}while(escolha < 1 || escolha > 8);
 			switch (escolha)
 			{
@@ -258,15 +314,21 @@ public class Lista implements Serializable {
 					L.addHiperlink();
 					break;
 				case 2:
-					flag = L.searchHiperlink();
-					if(flag != -1)
-						System.out.format("O hiperlink encontra-se na posição %d da lista.\n", flag);
+					position = L.searchHiperlink();
+					if(position != -1)
+						System.out.format("O hiperlink encontra-se na posição %d da lista.\n", position);
 					break;
 				case 3:
-					L.viewHiperlink(L.searchHiperlink());
+					do{
+						position = L.searchHiperlink();
+					}while(position == -1);
+					L.viewHiperlink(position);
 					break;
 				case 4:
-					L.editHiperlink(L.searchHiperlink());
+					do{
+						position = L.searchHiperlink();
+					}while(position == -1);
+					L.editHiperlink(position);
 					break;
 				case 5:
 					L.removeHiperlink();
