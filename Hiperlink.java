@@ -73,7 +73,7 @@ public class Hiperlink implements Serializable{
 		int index;
 		Scanner x = new Scanner(System.in);
 		System.out.println("O hiperlink possui a seguinte lista de metatags: ");
-		getComment();
+		getMetatags();
 		do{
 			System.out.println("Digite o índice do comentário a ser removido (a contagem começa de 0):");
 			index = x.nextInt();
